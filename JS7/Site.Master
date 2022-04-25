@@ -1,0 +1,147 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="JS7.SiteMaster" %>
+
+<!DOCTYPE html>
+
+<html lang="zh">
+<head runat="server">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%: Page.Title %> - 我的 ASP.NET  應用程式</title>
+
+    <asp:PlaceHolder runat="server">
+        <%: Scripts.Render("~/bundles/modernizr") %>
+    </asp:PlaceHolder>
+
+    <webopt:bundlereference runat="server" path="~/Content/css" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <script>
+        function drawClock(A) {
+            drawFace(A);
+            drawNumber(A);
+            drawSecond(A);
+            drawMinute(A);
+            drawHour(A);
+        }
+        function drawHour(A) {
+            var now = new Date();
+            var hour = now.getHours();
+            var minute = now.getMinutes();
+            hour = (Math.PI * hour / 6 + Math.PI * minute / 360);
+            A.beginPath(); A.lineWidth = 5;
+            A.lineCap = "round";
+            A.moveTo(0, 0); A.rotate(hour);
+            A.lineTo(0, -90); A.stroke();
+            A.rotate(-hour);
+        }
+        function drawMinute(A) {
+            var now = new Date();
+            var minute = now.getMinutes();
+            minute = (minute * Math.PI / 30);
+            A.beginPath(); A.lineWidth = 3;
+            A.lineCap = "round";
+            A.moveTo(0, 0); A.rotate(minute);
+            A.lineTo(0, -117); A.stroke();
+            A.rotate(-minute);
+        }
+        function drawSecond(A) {
+            var now = new Date();
+            var second = now.getSeconds();
+            second = (second * Math.PI / 30);
+            A.beginPath(); A.lineWidth = 1;
+            A.lineCap = "round";
+            A.moveTo(0, 0); A.rotate(second);
+            A.lineTo(0, -144); A.stroke();
+            A.rotate(-second);
+        }        
+        function drawNumber(A) {
+            A.font = "27px arial"; A.textBaseline = "middle";
+            A.textAlign = "center"; A.fillStyle = 'black';
+            var num; var ang;
+            for (num = 1; num < 13; num = num + 1) {
+                ang = num*Math.PI / 6; A.rotate(ang);
+                A.translate(0, -160);
+                A.fillText(num.toString(), 0, 0);
+                A.translate(0, 160);
+                A.rotate(-ang);
+            }
+        }
+        function drawFace(A) {
+            A.beginPath();
+            A.arc(0, 0, 180, 0, 2*Math.PI);
+            A.fillStyle = "white";
+            A.fill();
+            G = A.createRadialGradient(0, 0, 175, 0, 0, 185);
+            G.addColorStop(0, '#333');
+            G.addColorStop(0.5, 'white');
+            G.addColorStop(1, '#333');
+            A.strokeStyle = G; A.lineWidth = 20;
+            A.stroke();
+            A.beginPath();
+            A.arc(0, 0, 18, 0, 2 * Math.PI);
+            A.fillStyle = '#333';
+            A.fill();
+        }        
+    </script>
+</head>
+<body>
+    <canvas id="X" width="400" height="400" style="background-color:#333">
+    </canvas>
+    <script>
+        var MyCanvas = document.getElementById("X");
+        var Clock = MyCanvas.getContext("2d");
+        Clock.translate(200, 200);        
+        setInterval("drawClock(Clock);",1000);
+    </script>
+    <form runat="server">
+        <asp:ScriptManager runat="server">
+            <Scripts>
+                <%--To learn more about bundling scripts in ScriptManager see https://go.microsoft.com/fwlink/?LinkID=301884 --%>
+                <%--Framework Scripts--%>
+                <asp:ScriptReference Name="MsAjaxBundle" />
+                <asp:ScriptReference Name="jquery" />
+                <asp:ScriptReference Name="bootstrap" />
+                <asp:ScriptReference Name="WebForms.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebForms.js" />
+                <asp:ScriptReference Name="WebUIValidation.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebUIValidation.js" />
+                <asp:ScriptReference Name="MenuStandards.js" Assembly="System.Web" Path="~/Scripts/WebForms/MenuStandards.js" />
+                <asp:ScriptReference Name="GridView.js" Assembly="System.Web" Path="~/Scripts/WebForms/GridView.js" />
+                <asp:ScriptReference Name="DetailsView.js" Assembly="System.Web" Path="~/Scripts/WebForms/DetailsView.js" />
+                <asp:ScriptReference Name="TreeView.js" Assembly="System.Web" Path="~/Scripts/WebForms/TreeView.js" />
+                <asp:ScriptReference Name="WebParts.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebParts.js" />
+                <asp:ScriptReference Name="Focus.js" Assembly="System.Web" Path="~/Scripts/WebForms/Focus.js" />
+                <asp:ScriptReference Name="WebFormsBundle" />
+                <%--Site Scripts--%>
+            </Scripts>
+        </asp:ScriptManager>
+
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" runat="server" href="~/">應用程式名稱</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a runat="server" href="~/">首頁</a></li>
+                        <li><a runat="server" href="~/About">關於</a></li>
+                        <li><a runat="server" href="~/Contact">連絡人</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="container body-content">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server">
+            </asp:ContentPlaceHolder>
+            <hr />
+            <footer>
+                <p>&copy; <%: DateTime.Now.Year %> - 我的 ASP.NET  應用程式</p>
+            </footer>
+        </div>
+
+    </form>
+</body>
+</html>
